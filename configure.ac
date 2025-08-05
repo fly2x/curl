@@ -280,6 +280,15 @@ AS_HELP_STRING([--with-rustls=PATH],[where to look for Rustls, PATH points to th
   fi
 ])
 
+OPT_OPENHITLS=no
+AC_ARG_WITH(openhitls,dnl
+AS_HELP_STRING([--with-openhitls=PATH],[where to look for openHiTLS, PATH points to the installation root]),[
+  OPT_OPENHITLS=$withval
+  if test X"$withval" != Xno; then
+    TLSCHOICE="${TLSCHOICE:+$TLSCHOICE, }openHiTLS"
+  fi
+])
+
 AC_PATH_PROG(PERL, perl,, $PATH:/usr/local/bin/perl:/usr/bin/:/usr/local/bin)
 AC_SUBST(PERL)
 AM_CONDITIONAL(PERL, test -n "$PERL")
@@ -435,6 +444,7 @@ Select from these:
   --with-gnutls
   --with-mbedtls
   --with-openssl (also works for BoringSSL and LibreSSL)
+  --with-openhitls
   --with-rustls
   --with-schannel
   --with-wolfssl
@@ -2017,6 +2027,7 @@ CURL_WITH_GNUTLS
 CURL_WITH_MBEDTLS
 CURL_WITH_WOLFSSL
 CURL_WITH_RUSTLS
+CURL_WITH_OPENHITLS
 
 dnl link required libraries for USE_WIN32_CRYPTO or SCHANNEL_ENABLED
 if test "x$USE_WIN32_CRYPTO" = "x1" -o "x$SCHANNEL_ENABLED" = "x1"; then
@@ -2031,10 +2042,10 @@ if test "x$curl_cv_native_windows" = "xyes" -a "$curl_cv_wince" = 'no'; then
   LIBS="-lbcrypt $LIBS"
 fi
 
-case "x$SSL_DISABLED$OPENSSL_ENABLED$GNUTLS_ENABLED$MBEDTLS_ENABLED$WOLFSSL_ENABLED$SCHANNEL_ENABLED$RUSTLS_ENABLED" in
+case "x$SSL_DISABLED$OPENSSL_ENABLED$GNUTLS_ENABLED$MBEDTLS_ENABLED$WOLFSSL_ENABLED$SCHANNEL_ENABLED$RUSTLS_ENABLED$OPENHITLS_ENABLED" in
   x)
     AC_MSG_ERROR([TLS not detected, you will not be able to use HTTPS, FTPS, NTLM and more.
-Use --with-openssl, --with-gnutls, --with-wolfssl, --with-mbedtls, --with-schannel, --with-amissl or --with-rustls to address this.])
+Use --with-openssl, --with-gnutls, --with-wolfssl, --with-mbedtls, --with-schannel, --with-amissl, --with-rustls or --with-openhitls to address this.])
     ;;
   x1)
     # one SSL backend is enabled
@@ -2046,7 +2057,7 @@ Use --with-openssl, --with-gnutls, --with-wolfssl, --with-mbedtls, --with-schann
     ;;
   xD*)
     AC_MSG_ERROR([--without-ssl has been set together with an explicit option to use an ssl library
-(e.g. --with-openssl, --with-gnutls, --with-wolfssl, --with-mbedtls, --with-schannel, --with-amissl, --with-rustls).
+(e.g. --with-openssl, --with-gnutls, --with-wolfssl, --with-mbedtls, --with-schannel, --with-amissl, --with-rustls, --with-openhitls).
 Since these are conflicting parameters, verify which is the desired one and drop the other.])
     ;;
   *)

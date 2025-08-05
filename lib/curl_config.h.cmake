@@ -718,6 +718,9 @@ ${SIZEOF_TIME_T_CODE}
 /* if OpenSSL is in use */
 #cmakedefine USE_OPENSSL 1
 
+/* if openHiTLS is in use */
+#cmakedefine USE_OPENHITLS 1
+
 /* if AmiSSL is in use */
 #cmakedefine USE_AMISSL 1
 

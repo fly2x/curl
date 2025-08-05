@@ -687,6 +687,7 @@ cmake_dependent_option(CURL_USE_MBEDTLS "Enable mbedTLS for SSL/TLS" OFF CURL_EN
 cmake_dependent_option(CURL_USE_WOLFSSL "Enable wolfSSL for SSL/TLS" OFF CURL_ENABLE_SSL OFF)
 cmake_dependent_option(CURL_USE_GNUTLS "Enable GnuTLS for SSL/TLS" OFF CURL_ENABLE_SSL OFF)
 cmake_dependent_option(CURL_USE_RUSTLS "Enable Rustls for SSL/TLS" OFF CURL_ENABLE_SSL OFF)
+cmake_dependent_option(CURL_USE_OPENHITLS "Enable openHiTLS for SSL/TLS" OFF CURL_ENABLE_SSL OFF)
 
 if(WIN32 OR
    CURL_USE_SCHANNEL OR
@@ -912,6 +913,27 @@ if(CURL_USE_RUSTLS)
     set(_valid_default_ssl_backend TRUE)
   endif()
   set(_curl_ca_bundle_supported TRUE)
+endif()
+
+if(CURL_USE_OPENHITLS)
+  find_path(OPENHITLS_INCLUDE_DIR NAMES tls/hitls.h PATH_SUFFIXES openHiTLS)
+  find_library(OPENHITLS_TLS_LIBRARY NAMES hitls)
+  find_library(OPENHITLS_CRYPTO_LIBRARY NAMES crypto_openssl)
+  find_library(OPENHITLS_BSL_LIBRARY NAMES bsl)
+  
+  if(OPENHITLS_INCLUDE_DIR AND OPENHITLS_TLS_LIBRARY AND OPENHITLS_CRYPTO_LIBRARY AND OPENHITLS_BSL_LIBRARY)
+    set(_ssl_enabled ON)
+    set(USE_OPENHITLS ON)
+    list(APPEND CURL_LIBS ${OPENHITLS_TLS_LIBRARY} ${OPENHITLS_CRYPTO_LIBRARY} ${OPENHITLS_BSL_LIBRARY})
+    include_directories(SYSTEM ${OPENHITLS_INCLUDE_DIR})
+    
+    if(CURL_DEFAULT_SSL_BACKEND AND CURL_DEFAULT_SSL_BACKEND STREQUAL "openhitls")
+      set(_valid_default_ssl_backend TRUE)
+    endif()
+    set(_curl_ca_bundle_supported TRUE)
+  else()
+    message(FATAL_ERROR "Could not find openHiTLS. Make sure the openHiTLS libraries and headers are installed.")
+  endif()
 endif()
 
 if(CURL_DEFAULT_SSL_BACKEND AND NOT _valid_default_ssl_backend)

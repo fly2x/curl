@@ -82,6 +82,7 @@ LIB_VTLS_CFILES =           \
   vtls/mbedtls.c            \
   vtls/mbedtls_threadlock.c \
   vtls/openssl.c            \
+  vtls/openhitls.c          \
   vtls/rustls.c             \
   vtls/schannel.c           \
   vtls/schannel_verify.c    \
@@ -99,6 +100,7 @@ LIB_VTLS_HFILES =           \
   vtls/mbedtls.h            \
   vtls/mbedtls_threadlock.h \
   vtls/openssl.h            \
+  vtls/openhitls.h          \
   vtls/rustls.h             \
   vtls/schannel.h           \
   vtls/schannel_int.h       \
