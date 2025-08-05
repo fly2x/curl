@@ -721,6 +721,9 @@ ${SIZEOF_TIME_T_CODE}
 /* if openHiTLS is in use */
 #cmakedefine USE_OPENHITLS 1
 
+/* Define this if a SSL backend is enabled */
+#cmakedefine USE_SSL 1
+
 /* if AmiSSL is in use */
 #cmakedefine USE_AMISSL 1
 

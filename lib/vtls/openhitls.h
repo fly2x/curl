@@ -30,13 +30,5 @@
 
 extern const struct Curl_ssl Curl_ssl_openhitls;
 
-struct openhitls_ctx {
-  HITLS_Config *config;
-  HITLS_Ctx *ctx;
-  HITLS_CERT_X509 *server_cert;
-  BSL_UIO *bio;
-  HITLS_X509_StoreCtx *store_ctx;
-};
-
 #endif /* USE_OPENHITLS */
 #endif /* HEADER_CURL_OPENHITLS_H */

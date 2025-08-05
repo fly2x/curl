@@ -67,11 +67,11 @@ if test "x$OPT_OPENHITLS" != xno; then
         $PKGCONFIG --modversion openhitls`
       openhitlslibpath=`echo $addld | $SED -e 's/^-L//'`
     else
-      addlib="-lhitls -lhitls_crypto -lhitls_tls -lhitls_bsl -lhitls_pki -lboundscheck"
+      addlib=" -lhitls_tls -lhitls_pki  -lhitls_crypto -lhitls_bsl -lboundscheck"
       dnl use system defaults if user does not supply a path
       if test -n "$OPT_OPENHITLS"; then
         addld=-L$OPT_OPENHITLS/lib$libsuff
-        addcflags=-I$OPT_OPENHITLS/include
+        addcflags="-I$OPT_OPENHITLS/include/hitls -I$OPT_OPENHITLS/include/hitls/tls -I$OPT_OPENHITLS/include/hitls/pki -I$OPT_OPENHITLS/include/hitls/crypto -I$OPT_OPENHITLS/include/hitls/bsl"
         openhitlslibpath=$OPT_OPENHITLS/lib$libsuff
       fi
     fi
@@ -96,7 +96,7 @@ if test "x$OPT_OPENHITLS" != xno; then
       LIBS="$addlib $LIBS"
       AC_MSG_NOTICE([Add $addlib to LIBS])
 
-      AC_MSG_CHECKING([for HITLS_New in -lhitls])
+      AC_MSG_CHECKING([for HITLS_New in -lhitls_tls])
       AC_LINK_IFELSE([
         AC_LANG_PROGRAM([[
           #include <tls/hitls.h>

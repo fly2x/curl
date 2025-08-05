@@ -916,16 +916,17 @@ if(CURL_USE_RUSTLS)
 endif()
 
 if(CURL_USE_OPENHITLS)
-  find_path(OPENHITLS_INCLUDE_DIR NAMES tls/hitls.h PATH_SUFFIXES openHiTLS)
-  find_library(OPENHITLS_TLS_LIBRARY NAMES hitls)
-  find_library(OPENHITLS_CRYPTO_LIBRARY NAMES crypto_openssl)
-  find_library(OPENHITLS_BSL_LIBRARY NAMES bsl)
+  find_path(OPENHITLS_INCLUDE_DIR NAMES hitls/tls/hitls.h)
+  find_library(OPENHITLS_TLS_LIBRARY NAMES hitls_tls)
+  find_library(OPENHITLS_CRYPTO_LIBRARY NAMES hitls_crypto)
+  find_library(OPENHITLS_BSL_LIBRARY NAMES hitls_bsl)
   
   if(OPENHITLS_INCLUDE_DIR AND OPENHITLS_TLS_LIBRARY AND OPENHITLS_CRYPTO_LIBRARY AND OPENHITLS_BSL_LIBRARY)
     set(_ssl_enabled ON)
     set(USE_OPENHITLS ON)
     list(APPEND CURL_LIBS ${OPENHITLS_TLS_LIBRARY} ${OPENHITLS_CRYPTO_LIBRARY} ${OPENHITLS_BSL_LIBRARY})
     include_directories(SYSTEM ${OPENHITLS_INCLUDE_DIR})
+    include_directories(SYSTEM ${OPENHITLS_INCLUDE_DIR}/hitls)
     
     if(CURL_DEFAULT_SSL_BACKEND AND CURL_DEFAULT_SSL_BACKEND STREQUAL "openhitls")
       set(_valid_default_ssl_backend TRUE)
@@ -934,6 +935,11 @@ if(CURL_USE_OPENHITLS)
   else()
     message(FATAL_ERROR "Could not find openHiTLS. Make sure the openHiTLS libraries and headers are installed.")
   endif()
+endif()
+
+# Set general SSL flag when any SSL backend is enabled
+if(_ssl_enabled)
+  set(USE_SSL ON)
 endif()
 
 if(CURL_DEFAULT_SSL_BACKEND AND NOT _valid_default_ssl_backend)
